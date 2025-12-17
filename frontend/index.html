@@ -6,8 +6,35 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <h1>Azure Serverless App</h1>
-    <div id="status">Loading...</div>
+    <header>
+      <h1>Azure Serverless Status Dashboard</h1>
+      <p class="sub">Static Web Apps + Functions (Python) + Blob Storage + GitHub Actions</p>
+    </header>
+
+    <main>
+      <section class="card">
+        <h2>Live Status</h2>
+        <div id="status" class="mono">Loading...</div>
+        <div class="actions">
+          <button id="refreshBtn">Refresh</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>What this demonstrates</h2>
+        <ul>
+          <li>CI/CD auto-deploy on every push</li>
+          <li>Serverless backend (scales to zero)</li>
+          <li>Private cloud storage integration</li>
+          <li>Environment variables for secrets</li>
+        </ul>
+      </section>
+    </main>
+
+    <footer>
+      <span class="mono">Project 4 — Azure</span>
+    </footer>
+
     <script src="app.js"></script>
   </body>
 </html>

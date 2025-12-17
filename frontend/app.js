@@ -1,10 +1,11 @@
 async function loadStatus() {
   const el = document.getElementById("status");
-  el.textContent = "Loading status from Azure Function...";
+  el.textContent = "Loading status from /api/status ...";
 
   try {
-    const res = await fetch("/api/status");
+    const res = await fetch("/api/status", { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
     const data = await res.json();
 
     el.innerHTML = `
@@ -14,12 +15,13 @@ async function loadStatus() {
       <div><b>Last Updated:</b> ${data.lastUpdated}</div>
       <div style="margin-top:12px;"><b>Messages:</b></div>
       <ul>
-        ${data.messages.map(m => `<li>${m}</li>`).join("")}
+        ${(data.messages || []).map(m => `<li>${m}</li>`).join("")}
       </ul>
     `;
   } catch (err) {
-    el.textContent = "Failed to load status ❌ " + err.message;
+    el.textContent = `Failed to load status ❌ (${err.message})`;
   }
 }
 
+document.getElementById("refreshBtn").addEventListener("click", loadStatus);
 loadStatus();
