@@ -3,25 +3,29 @@ import json
 import time
 import uuid
 from datetime import datetime, timezone
+from pathlib import Path
 
 import azure.functions as func
 
-# This lives only while the function instance is warm (good enough for a demo)
 START_TIME = time.time()
+
+def _load_build_info():
+    try:
+        p = Path(__file__).resolve().parent.parent / "shared" / "build_info.json"
+        return json.loads(p.read_text(encoding="utf-8"))
+    except Exception:
+        return {"version": "unknown", "buildTimeUtc": "unknown", "commitSha": "unknown"}
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     uptime_seconds = round(time.time() - START_TIME, 3)
+    build = _load_build_info()
 
     payload = {
         "requestId": str(uuid.uuid4()),
         "timestampUtc": datetime.now(timezone.utc).isoformat(),
-        "region": os.environ.get("REGION_NAME") or os.environ.get("WEBSITE_REGION") or "unknown",
-        "deployment": {
-            "repo": os.environ.get("GITHUB_REPOSITORY", "unknown"),
-            "sha": os.environ.get("GITHUB_SHA", "unknown")[:12]
-        },
+        "region": os.environ.get("WEBSITE_REGION") or os.environ.get("REGION_NAME") or "unknown",
+        "build": build,
         "runtime": {
-            "python": os.environ.get("PYTHON_VERSION", "unknown"),
             "uptimeSeconds": uptime_seconds
         }
     }
