@@ -9,9 +9,10 @@ BLOB_NAME = "status.json"
 
 def main(req: func.HttpRequest) -> func.HttpResponse:
     try:
-        conn_str = os.environ.get("AzureWebJobsStorage")
+        # IMPORTANT: we'll store the Storage connection string in this setting
+        conn_str = os.environ.get("STORAGE_CONN_STR")
         if not conn_str:
-            return func.HttpResponse("Missing AzureWebJobsStorage setting", status_code=500)
+            return func.HttpResponse("Missing STORAGE_CONN_STR app setting", status_code=500)
 
         bsc = BlobServiceClient.from_connection_string(conn_str)
         blob_client = bsc.get_blob_client(container=CONTAINER_NAME, blob=BLOB_NAME)
